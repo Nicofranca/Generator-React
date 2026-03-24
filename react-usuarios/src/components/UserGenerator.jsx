@@ -4,7 +4,8 @@ import './UserGenerator.css';
 export default function UserGenerator() {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(false);
-  const[count, setCount] = useState(-5);
+  const [count, setCount] = useState(-5);
+  const [genero, setGenero] = useState('');
 
   // Função assíncrona para buscar dados da API
   const fetchUsers = async () => {
@@ -12,7 +13,7 @@ export default function UserGenerator() {
     try {
       // Buscamos 5 usuários aleatórios. 
       // Dica: Altere o número após 'results=' para carregar mais!
-      const response = await fetch('https://randomuser.me/api/?results=5');
+      const response = await fetch(`https://randomuser.me/api/?results=5${genero}`);
       const data = await response.json();
       
       // A API RandomUser entrega os dados dentro da propriedade .results
@@ -26,16 +27,24 @@ export default function UserGenerator() {
     }
   };
 
+  const generoMale = async () => {
+    setGenero('&gender=male')
+  }
+
+  const generoFem = async () => {
+    setGenero('&gender=female')
+  }
+
 
   // useEffect: Faz a primeira busca assim que o componente é montado
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [genero]);
 
   return (
     <div className="user-container">
       <header className="user-header">
-        <h2>👥 Gerador de Equipe</h2>
+        <h2>Gerador de Equipe</h2>
         <button 
           onClick={fetchUsers} 
           disabled={loading}
@@ -43,8 +52,29 @@ export default function UserGenerator() {
         >
           {loading ? 'Buscando...' : '🔄 Gerar Novos'}
         </button>
-        <p>Total Gerado: {count}</p>
+        
+        <button
+            className="refresh-button"
+            onClick={() => {
+                generoMale();
+                fetchUsers();
+            }}
+            disabled={loading}>
+        
+            Apenas Homens
+        </button>
+        <button
+            className="refresh-button"
+            onClick={() => {
+                generoFem()
+                fetchUsers()
+            }}
+            disabled={loading}>
+            Apenas Mulheres
+        </button>
       </header>
+
+      <p>Total Gerado: {count}</p>
 
       <div className="user-grid">
         {loading ? (
