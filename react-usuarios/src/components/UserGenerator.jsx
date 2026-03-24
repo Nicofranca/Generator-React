@@ -4,6 +4,7 @@ import './UserGenerator.css';
 export default function UserGenerator() {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(false);
+  const[count, setCount] = useState(-5);
 
   // Função assíncrona para buscar dados da API
   const fetchUsers = async () => {
@@ -16,12 +17,15 @@ export default function UserGenerator() {
       
       // A API RandomUser entrega os dados dentro da propriedade .results
       setUsuarios(data.results);
+
+      setCount(count => count + 5);
     } catch (error) {
       console.error("Erro ao carregar usuários:", error);
     } finally {
       setLoading(false);
     }
   };
+
 
   // useEffect: Faz a primeira busca assim que o componente é montado
   useEffect(() => {
@@ -39,6 +43,7 @@ export default function UserGenerator() {
         >
           {loading ? 'Buscando...' : '🔄 Gerar Novos'}
         </button>
+        <p>Total Gerado: {count}</p>
       </header>
 
       <div className="user-grid">
